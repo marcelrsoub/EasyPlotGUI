@@ -4,7 +4,7 @@
  # Easy implementation process
  1. Create GUI on QtDesigner based on `mpl_gui.ui`
  2. Import EasyPlotGUI
- 3. Overwrite `update_graph()` and `update_interactivity`
+ 3. Overwrite `update_graph()` with graph to be generated; and `update_interactivity()` with GUI elements interaction
 
  ## QtDesigner
  ### Installation
@@ -31,8 +31,6 @@ Use the `mpl_gui.ui` file on QtDesigner as a starting point for the GUI with Mat
 The only important thing in this .ui file is the MplWidget object. The MplWidget is the widget created to link matplotlib to Qt. Do not delete it.
 
 ## Example of Usage
-
-![Example output](./test_example.png "Example output")
 
 
 ``` python
@@ -69,3 +67,5 @@ class MyClass(EasyPlotGUI):
 my_gui=MyClass()
 my_gui.show_gui()
 ```
+### Test Example
+![Example output](./test_example.png "Example output")
