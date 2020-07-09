@@ -19,10 +19,9 @@ from matplotlib.figure import Figure
 from matplotlib.widgets import Slider, Button, RadioButtons
 
 import numpy as np
-import random
 
 
-class Mpl(QWidget):
+class MplWidget(QWidget):
     
     def __init__(self, parent = None):
         
@@ -40,22 +39,24 @@ class Mpl(QWidget):
 # --------------------------------------
 class EasyPlotGUI(QWidget):
 
-    """Easy GUI with matplotlib
+    """Easy GUI with Matplotlib
     """
     
     def __init__(self):
 
         self.window_title="EasyPlotGUI"
-        self.ui_filepath="untitled.ui"
+        self.ui_filepath="test_example.ui"
         self.icon_path=None
 
     def show_gui(self):
+        """This is the core of the execution.
+        """
         app = QApplication([])
         
         QWidget.__init__(self)
 
         loader = QUiLoader()
-        loader.registerCustomWidget(Mpl)
+        loader.registerCustomWidget(MplWidget)
         # self.ui = loader.load(designer_file, self)
         ui_file = QFile(self.ui_filepath)
         if not ui_file.open(QIODevice.ReadOnly):
@@ -65,8 +66,8 @@ class EasyPlotGUI(QWidget):
         self.ui = loader.load(ui_file, None)
         ui_file.close()
 
-        self.ax=self.ui.Mpl.mpl_canvas.axes
-        self.canvas=self.ui.Mpl.mpl_canvas
+        self.ax=self.ui.MplWidget.mpl_canvas.axes
+        self.canvas=self.ui.MplWidget.mpl_canvas
 
         if not self.ui:
             print(loader.errorString())
@@ -88,10 +89,18 @@ class EasyPlotGUI(QWidget):
         app.exec_()
 
     def update_interactivity(self):
+        """This method adds the interactivity between the GUI elements and the code. An example of execution can be seen below. This method is supposed to be overwritten when EasyGUI is imported as a parent class for adding your own graphs.
+
+        Check interactivity functions on PySide2 doc.
+
+        """  
         # example, to be overwritten
         self.ui.pushButton_generate_random_signal.clicked.connect(self.update_graph)
 
     def update_graph(self):
+        """This method generates and updates the graph. An example of execution can be seen below. This method is supposed to be overwritten when EasyGUI is imported as a parent class for adding your own graphs.
+
+        """        
         # example, to be overwritten
         y = np.random.rand(100)
         x = np.linspace(0,1,100)
@@ -103,9 +112,45 @@ class EasyPlotGUI(QWidget):
         self.canvas.draw()
         
 if __name__ == "__main__":
+    # # Test Example
+    # gui = EasyPlotGUI()
+    # gui.window_title="Window Title"
+    # gui.ui_filepath="test_example.ui"
+    # gui.icon_path="./logo.png"
+    # gui.show_gui()
 
-    gui = EasyPlotGUI()
-    gui.window_title="Window Title"
-    gui.ui_filepath="untitled.ui"
-    gui.icon_path="./logo.png"
-    gui.show_gui()
+    # EXAMPLE OF USAGE
+    # Slider changing the frequency of a sine wave.
+
+    class MyClass(EasyPlotGUI):
+        def __init__(self):
+            super().__init__()
+            self.window_title="My GUI Name"
+            self.ui_filepath="X:/xxxxx/xxxx/your_GUI.ui"
+            self.icon_path="X:/xxxxx/xxxx/your_GUI_icon.ui"
+
+            #initialize Graph variables for first plot
+            self.f=1
+        
+        def update_interactivity(self):
+            self.ui.mySlider.valueChanged(self.change_frequency())
+        
+        def change_frequency(self):
+            self.f=self.ui.mySlider.value()
+            self.update_graph()
+        
+        def update_graph(self):
+            x=np.linspace(0,1)
+            y=np.sin(2*np.pi*self.f*x)
+
+            self.ax.clear()
+            self.ax.plot(x, y, label="Sine")
+            self.ax.legend()
+            self.ax.set_title('Sine Wave')
+            self.canvas.draw()
+
+    #calling it
+    my_gui=MyClass()
+    my_gui.show_gui()
+
+
