@@ -41,7 +41,7 @@ class MyClass(EasyPlotGUI):
         super().__init__()
         self.window_title="My GUI Name"
         self.ui_filepath="X:/xxxxx/xxxx/your_GUI.ui"
-        self.icon_path="X:/xxxxx/xxxx/your_GUI_icon.ui"
+        self.icon_path="X:/xxxxx/xxxx/your_GUI_icon.png"
 
         #initialize Graph variables for first plot
         self.f=1
@@ -68,4 +68,13 @@ my_gui=MyClass()
 my_gui.show_gui()
 ```
 ### Test Example
+
+``` python
+gui = EasyPlotGUI()
+gui.window_title="Window Title"
+gui.ui_filepath="test_example.ui"
+gui.icon_path="./logo.png"
+gui.show_gui()
+```
+
 ![Example output](./test_example.png "Example output")

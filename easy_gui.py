@@ -46,7 +46,7 @@ class EasyPlotGUI(QWidget):
 
         self.window_title="EasyPlotGUI"
         self.ui_filepath="test_example.ui"
-        self.icon_path=None
+        self.icon_path="logo.png"
 
     def show_gui(self):
         """This is the core of the execution.
