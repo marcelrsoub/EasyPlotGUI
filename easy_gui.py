@@ -4,19 +4,20 @@
 # @Last Modified by:   Marcel Reis-Soubkovsky
 # @Last Modified time: 2020-07-08 18:04:03
 
-
 from PySide2.QtWidgets import*
 from PySide2.QtUiTools import QUiLoader
 from PySide2.QtCore import Qt, QFile, QIODevice
-from PySide2.QtWidgets import QApplication, QWidget
+from PySide2.QtWidgets import QApplication, QWidget, QFileDialog
 from PySide2.QtGui import QIcon
 import sys
 
 from matplotlib.backends.backend_qt5agg import (
         FigureCanvas, NavigationToolbar2QT as NavigationToolbar)
+import matplotlib.pyplot as plt
 
 from matplotlib.figure import Figure
 from matplotlib.widgets import Slider, Button, RadioButtons
+from cycler import cycler
 
 import numpy as np
 
@@ -43,10 +44,11 @@ class EasyPlotGUI(QWidget):
     """
     
     def __init__(self):
-
         self.window_title="EasyPlotGUI"
         self.ui_filepath="test_example.ui"
         self.icon_path="logo.png"
+
+        
 
     def show_gui(self):
         """This is the core of the execution.
@@ -59,28 +61,42 @@ class EasyPlotGUI(QWidget):
         loader.registerCustomWidget(MplWidget)
         # self.ui = loader.load(designer_file, self)
         ui_file = QFile(self.ui_filepath)
-        if not ui_file.open(QIODevice.ReadOnly):
-            print("Cannot open {}: {}".format(self.ui_filepath, ui_file.errorString()))
-            sys.exit(-1)
+        try:
+            ui_file.open(QIODevice.ReadOnly)
+        except:
+            raise TypeError("Unable to open {}: {}".format(self.ui_filepath, ui_file.errorString()))
         loader = QUiLoader()
+
         self.ui = loader.load(ui_file, None)
         ui_file.close()
 
-        self.ax=self.ui.MplWidget.mpl_canvas.axes
-        self.canvas=self.ui.MplWidget.mpl_canvas
+        try:
+            self.ax=self.ui.MplWidget.mpl_canvas.axes
+            self.canvas=self.ui.MplWidget.mpl_canvas
+
+            custom_cycler = (cycler(color=['#ed2124','#808081','c', 'm', 'y', 'k']))
+            plt.rc('axes', prop_cycle=custom_cycler)
+            self.update_graph()
+        except AttributeError:
+            pass
 
         if not self.ui:
             print(loader.errorString())
             sys.exit(-1)
 
         self.update_interactivity()
-        self.update_graph()
+        
 
         self.setWindowTitle(self.window_title)
+
+        
 
         grid_layout = QGridLayout()
         grid_layout.addWidget(self.ui)
         self.setLayout(grid_layout)
+
+        self.QFileDialog=QFileDialog
+        self.QMainWindow=QMainWindow
 
         if self.icon_path!=None:
             self.setWindowIcon(QIcon(self.icon_path))
@@ -112,45 +128,45 @@ class EasyPlotGUI(QWidget):
         self.canvas.draw()
         
 if __name__ == "__main__":
-    # # Test Example
-    # gui = EasyPlotGUI()
-    # gui.window_title="Window Title"
-    # gui.ui_filepath="test_example.ui"
-    # gui.icon_path="./logo.png"
-    # gui.show_gui()
+    # Test Example
+    gui = EasyPlotGUI()
+    gui.window_title="Window Title"
+    gui.ui_filepath="test_example.ui"
+    gui.icon_path="./logo.png"
+    gui.show_gui()
 
     # EXAMPLE OF USAGE
     # Slider changing the frequency of a sine wave.
 
-    class MyClass(EasyPlotGUI):
-        def __init__(self):
-            super().__init__()
-            self.window_title="My GUI Name"
-            self.ui_filepath="X:/xxxxx/xxxx/your_GUI.ui"
-            self.icon_path="X:/xxxxx/xxxx/your_GUI_icon.ui"
+    # class MyClass(EasyPlotGUI):
+    #     def __init__(self):
+    #         super().__init__()
+    #         self.window_title="My GUI Name"
+    #         self.ui_filepath="X:/xxxxx/xxxx/your_GUI.ui"
+    #         self.icon_path="X:/xxxxx/xxxx/your_GUI_icon.png"
 
-            #initialize Graph variables for first plot
-            self.f=1
+    #         #initialize Graph variables for first plot
+    #         self.f=1
         
-        def update_interactivity(self):
-            self.ui.mySlider.valueChanged(self.change_frequency())
+    #     def update_interactivity(self):
+    #         self.ui.mySlider.valueChanged(self.change_frequency())
         
-        def change_frequency(self):
-            self.f=self.ui.mySlider.value()
-            self.update_graph()
+    #     def change_frequency(self):
+    #         self.f=self.ui.mySlider.value()
+    #         self.update_graph()
         
-        def update_graph(self):
-            x=np.linspace(0,1)
-            y=np.sin(2*np.pi*self.f*x)
+    #     def update_graph(self):
+    #         x=np.linspace(0,1)
+    #         y=np.sin(2*np.pi*self.f*x)
 
-            self.ax.clear()
-            self.ax.plot(x, y, label="Sine")
-            self.ax.legend()
-            self.ax.set_title('Sine Wave')
-            self.canvas.draw()
+    #         self.ax.clear()
+    #         self.ax.plot(x, y, label="Sine")
+    #         self.ax.legend()
+    #         self.ax.set_title('Sine Wave')
+    #         self.canvas.draw()
 
-    #calling it
-    my_gui=MyClass()
-    my_gui.show_gui()
+    # #calling it
+    # my_gui=MyClass()
+    # my_gui.show_gui()
 
 

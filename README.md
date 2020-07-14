@@ -2,9 +2,10 @@
  Python library that makes it easy to have a Qt GUI with a matplotlib widget made in QtDesigner implemented on a script.
 
  # Easy implementation process
- 1. Create GUI on QtDesigner based on `mpl_gui.ui`
- 2. Import EasyPlotGUI
- 3. Overwrite `update_graph()` with graph to be generated; and `update_interactivity()` with GUI elements interaction
+ 1. Clone `EasyPlotGUI` to your project's folder
+ 2. Create GUI on QtDesigner based on `mpl_gui.ui`
+ 3. Import `EasyPlotGUI` as parent class (see example of usage)
+ 4. Overwrite `update_graph()` with graph to be generated; and `update_interactivity()` with GUI elements interaction
 
  ## QtDesigner
  ### Installation
@@ -22,7 +23,7 @@ After the installation, the `designer.exe` executable should be found in:
 Python3X\Lib\site-packages\pyqt5_tools\Qt\bin\designer.exe
 ```
 
-I suggest creating a shortcut for it, for easier execution or adding the folder to the path, so that it can be called as just `desginer` from the terminal/shell.
+I suggest creating a shortcut for it, for easier execution or adding the folder to the path, so that it can be called as just `designer` from the terminal/shell.
 
 ### UI with Matplotlib Creation
 
